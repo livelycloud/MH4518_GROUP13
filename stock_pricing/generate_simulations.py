@@ -9,9 +9,9 @@ if __name__ == "__main__":
 
     print(os.getcwd())
 
-    Nsim = 10000
+    Nsim = 1000
     np.random.seed(4518)
-    save_path = "../generated_data/multiGBM_simple/" 
+    save_path = "../generated_data/multiGBM_simple_1000/" 
     time_format = "%Y-%m-%d"
     
     sample_cols = ["GOOGL", "MSFT", "AAPL"]
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     multassetGBM = MultiAssetGBM(df, fixing_date, asset_names)
     multassetGBM.set_start_date(historical_data_start_date)
 
-    for cur_date in tqdm(pd.bdate_range("2022-08-15", "2022-10-31")): # "2022-05-31", "2022-08-15", "2022-10-31"
+    for cur_date in tqdm(pd.bdate_range("2022-05-31", "2022-08-15")): # "2022-05-31", "2022-08-15", "2022-10-31"
         sample_start_date = cur_date + pd.Timedelta(days = 1)
         samples = [pd.DataFrame(multassetGBM.get_path(cur_date.strftime(time_format)).transpose(), 
                     columns = sample_cols, 
