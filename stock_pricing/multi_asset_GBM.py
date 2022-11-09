@@ -8,8 +8,7 @@ class  MultiAssetGBM(AssetModel):
 
     asset_names: list
     r: float
-    v: float
-    sigma: float
+    
 
     def __init__(self, df: pd.DataFrame, fixing_date: str, asset_names: list):
         super().__init__(df, fixing_date)

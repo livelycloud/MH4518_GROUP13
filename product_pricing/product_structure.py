@@ -160,7 +160,7 @@ if __name__ == "__main__":
     if rv_type == "av":
         Nsim *= 2
 
-    for cur_date in tqdm(pd.bdate_range( "2022-06-30", "2022-07-31")): # "2022-05-31", "2022-08-15", "2022-10-31"
+    for cur_date in tqdm(pd.bdate_range("2022-07-31", "2022-09-01",)): # "2022-05-31", "2022-08-15", "2022-10-31"
         cur_date = cur_date + pd.Timedelta(days = 1)
         sim_df = pd.read_csv(simulation_path + cur_date.strftime(time_format) + ".csv")
 

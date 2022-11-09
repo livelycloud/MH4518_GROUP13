@@ -4,8 +4,8 @@ import numpy as np
 from tqdm import tqdm
 import os
 
-rv_type = "av"
-Nsim = 5000
+rv_type = "mc"
+Nsim = 1000
 rv_path = "../random_variable/" + rv_type + str(Nsim) + "/"
 
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     multassetGBM = MultiAssetGBM(df, fixing_date, asset_names)
     multassetGBM.set_start_date(historical_data_start_date)
     print(rv_type, " ", Nsim)
-    for cur_date in tqdm(pd.bdate_range("2022-08-01", "2022-09-01")): # "2022-05-31", "2022-09-01", "2022-10-31"
+    for cur_date in tqdm(pd.bdate_range("2022-08-02", "2022-08-02")): # "2022-05-31", "2022-09-01", "2022-10-31"
         sample_start_date = cur_date + pd.Timedelta(days = 1)
         historical_data_start_date = (cur_date - pd.Timedelta(days = 365)).strftime(time_format)
         multassetGBM.set_start_date(historical_data_start_date)
@@ -48,7 +48,9 @@ if __name__ == "__main__":
         for i in range(Nsim):
             samples[i]["index"] = i
         samples_df = pd.concat(samples)
+        print("v: ", multassetGBM.v)
+        print("sigma:", multassetGBM.sigma)
 
         cur_path = save_path + sample_start_date.strftime(time_format) + ".csv"
         print(cur_path)
-        samples_df.to_csv(cur_path)
+        # samples_df.to_csv(cur_path)
