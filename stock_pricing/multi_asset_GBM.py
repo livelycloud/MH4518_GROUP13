@@ -49,3 +49,36 @@ class  MultiAssetGBM(AssetModel):
         return_path =np.exp(np.repeat([self.v.values], [days], axis = 0).transpose() + self.sigma.transpose().values @  w).cumprod(axis = 1)
         price_path = np.diag(self.s_0) @ return_path
         return price_path
+
+    def get_path_av(self, cur_date: str):
+        self.set_cur_date(cur_date)
+        self.fit_date(self.start_date, self.cur_date)
+        days = np.busday_count( self.cur_date, self.fixing_date)
+        
+        w = np.random.normal(0, 1, (self.no_of_assets, days))
+        self.s_0 = self.df.loc[cur_date, self.asset_names]
+        return_path =np.exp(np.repeat([self.v.values], [days], axis = 0).transpose() + self.sigma.transpose().values @  w).cumprod(axis = 1)
+        return_path_av = np.exp(np.repeat([self.v.values], [days], axis = 0).transpose() + self.sigma.transpose().values @  (-w)).cumprod(axis = 1)
+        return_path = return_path*0.5+return_path_av*0.5
+        price_path = np.diag(self.s_0) @ return_path
+        return price_path
+
+    def get_path_ss(self,cur_date,w):
+        self.set_cur_date(cur_date)
+        self.fit_date(self.start_date, self.cur_date)
+        days = np.busday_count( self.cur_date, self.fixing_date)
+        self.s_0 = self.df.loc[cur_date, self.asset_names]
+        return_path =np.exp(np.repeat([self.v.values], [days], axis = 0).transpose() + self.sigma.transpose().values @  w).cumprod(axis = 1)
+        price_path = np.diag(self.s_0) @ return_path
+        return price_path
+
+
+    def get_days(self,cur_date):
+        self.set_cur_date(cur_date)
+        self.fit_date(self.start_date, self.cur_date)
+        days = np.busday_count( self.cur_date, self.fixing_date)
+        return days
+
+    def get_no_assets(self):
+        return self.no_of_assets
+    

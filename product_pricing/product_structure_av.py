@@ -4,7 +4,7 @@ import statsmodels.api as sm
 from tqdm import tqdm
 
 inerest_rate_path = "../interest rate model/interest_rate_wh.csv"
-simulation_path = "../generated_data/GMB_simple_one_year_window_1000/"
+simulation_path = "../generated_data/GMB_simple_one_year_window_1000_av/"
 
 time_format = "%Y-%m-%d"
 
@@ -171,3 +171,5 @@ if __name__ == "__main__":
         v_0_price = v_price.apply(lambda x: get_product_price(x, cur_date, next_date= v_date))
         v_0_price.to_csv(simulation_path + save_date + "v_0" + ".csv")
 
+
+# & C:/Users/Lenovo/.conda/envs/tf_gpu/python.exe d:/ntu/y3s1/MH4518/project/MH4518_GROUP13/product_pricing/product_structure.py
