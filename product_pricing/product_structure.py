@@ -3,8 +3,13 @@ import numpy as np
 import statsmodels.api as sm
 from tqdm import tqdm
 
-inerest_rate_path = "../interest rate model/interest_rate_wh.csv"
-simulation_path = "../generated_data/GMB_simple_one_year_window_1000/"
+rv_type = "ss"
+Nsim = 5000 #if av, change to 2 * Nsim
+
+
+inerest_rate_path = "../interest rate model/interest_rate_YC_wh.csv"
+simulation_path = "../generated_data/final_" + str(Nsim) + "/" + rv_type + "/"
+
 
 time_format = "%Y-%m-%d"
 
@@ -127,11 +132,11 @@ class Poly2DModel:
 def get_sim_noncallable_price(df: pd.DataFrame):
     func_df = df.set_index(["index", "date"])
     l = []
-    for i in  range(1000):
+    for i in  range(Nsim):
         tmp_df = func_df.loc[i]
         l.append(get_product_price(get_redemption_amount(tmp_df), cur_date = final_redemption_date))
         
-    return pd.Series(l, index = pd.Series([x for x in range(1000)]))
+    return pd.Series(l, index = pd.Series([x for x in range(Nsim)]))
 
 # input df: to get prices of underlying assets to run the regression
 def get_v_backward(df: pd.DataFrame, exercise_date: str, redemption_date: str, v: pd.Series, v_date: str) -> pd.Series:
@@ -152,7 +157,10 @@ if __name__ == "__main__":
     df_init_price = pd.Series(stock_init_price)
     df_convert = pd.Series(stock_ratio)
 
-    for cur_date in tqdm(pd.bdate_range( "2022-08-15", "2022-10-31")): # "2022-05-31", "2022-08-15", "2022-10-31"
+    if rv_type == "av":
+        Nsim *= 2
+
+    for cur_date in tqdm(pd.bdate_range( "2022-06-30", "2022-07-31")): # "2022-05-31", "2022-08-15", "2022-10-31"
         cur_date = cur_date + pd.Timedelta(days = 1)
         sim_df = pd.read_csv(simulation_path + cur_date.strftime(time_format) + ".csv")
 
@@ -168,6 +176,12 @@ if __name__ == "__main__":
                 redemption_date = early_redemption_dates[i]
                 v_price = get_v_backward(sim_df, exercise_date, redemption_date, v_price, v_date)
                 v_date = redemption_date
+
+        ## edge case: consider the first coupon paymeent
+        if cur_date < coupon_payment_dates[0]:
+            v_price = v_price.apply(lambda x: get_product_price(x, coupon_payment_dates[0], next_date= v_date))
+            v_date = coupon_payment_dates[0]
+
         v_0_price = v_price.apply(lambda x: get_product_price(x, cur_date, next_date= v_date))
         v_0_price.to_csv(simulation_path + save_date + "v_0" + ".csv")
 

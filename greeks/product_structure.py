@@ -68,9 +68,9 @@ def get_business_days_to_final_redemption(cur_date, final_date = final_redemptio
 # (should return the average interest rate from current date to final redemption date)
 def get_interest_rate(cur_date, to_date = final_redemption_date):
     r = float(interest_rate_df.loc[interest_rate_date, "rate"]) / 100
-
+    return r
     ## TODO: return r
-    return 1.742355916 / 100
+    # return 1.742355916 / 100
 
 def get_discounted_price(p: float, cur_date, to_date = final_redemption_date):
     r = get_interest_rate(cur_date)
