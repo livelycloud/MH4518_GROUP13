@@ -49,6 +49,19 @@ class  MultiAssetGBM(AssetModel):
         return_path =np.exp(np.repeat([self.v.values], [days], axis = 0).transpose() + self.sigma.transpose().values @  w).cumprod(axis = 1)
         price_path = np.diag(self.s_0) @ return_path
         return price_path
+    
+    def get_path_by_rv(self, cur_date: str, w: np.array):
+        self.set_cur_date(cur_date)
+        self.fit_date(self.start_date, self.cur_date)
+        days = np.busday_count( self.cur_date, self.fixing_date)
+
+        assert w.shape[1] == days
+        
+        self.s_0 = self.df.loc[cur_date, self.asset_names]
+        return_path =np.exp(np.repeat([self.v.values], [days], axis = 0).transpose() + self.sigma.transpose().values @  w).cumprod(axis = 1)
+        price_path = np.diag(self.s_0) @ return_path
+        return price_path
+
 
     def get_path_av(self, cur_date: str):
         self.set_cur_date(cur_date)
