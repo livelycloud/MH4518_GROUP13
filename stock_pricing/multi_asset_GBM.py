@@ -80,6 +80,8 @@ class  MultiAssetGBM(AssetModel):
         return price_path
 
 
+    # The following code are wrong, thus commented out.
+    
     # def get_path_av(self, cur_date: str):
     #     self.set_cur_date(cur_date)
     #     self.fit_date(self.start_date, self.cur_date)

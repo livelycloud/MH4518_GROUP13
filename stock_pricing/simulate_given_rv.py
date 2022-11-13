@@ -6,7 +6,9 @@ import os
 
 rv_type = "ss"
 Nsim = 1000
+look_back_days = 180
 rv_path = "../random_variable/" + rv_type + str(Nsim) + "/"
+
 
 
 def rv_load(cur_date):
@@ -16,7 +18,7 @@ def rv_load(cur_date):
 if __name__ == "__main__":
 
     print(os.getcwd())
-    save_path = "../generated_data/risk_neutral_no_sigma/final_" + str(Nsim) + "/" + rv_type + "/" 
+    save_path = "../generated_data/risk_neutral_no_sigma/final_" + str(Nsim) + "_" + str(look_back_days) + "/" + rv_type + "/" 
     
     if rv_type == "av":
         Nsim *= 2
@@ -40,7 +42,7 @@ if __name__ == "__main__":
     print(rv_type, " ", Nsim)
     for cur_date in tqdm(pd.bdate_range("2022-06-01", "2022-10-31")): # "2022-05-31", "2022-09-01", "2022-10-31"
         sample_start_date = cur_date + pd.Timedelta(days = 1)
-        historical_data_start_date = (cur_date - pd.Timedelta(days = 365)).strftime(time_format)
+        historical_data_start_date = (cur_date - pd.Timedelta(days = look_back_days)).strftime(time_format)
         multassetGBM.set_start_date(historical_data_start_date)
         w = rv_load(cur_date)
         samples = [pd.DataFrame(multassetGBM.get_path_by_rv(cur_date.strftime(time_format), w[i]).transpose(), 

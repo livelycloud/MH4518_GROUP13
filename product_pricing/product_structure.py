@@ -5,12 +5,13 @@ from tqdm import tqdm
 import os
 import time
 
-rv_type = "ss"
+rv_type = "mc"
 Nsim = 1000 
 
+look_back_days = 180
 
 inerest_rate_path = "../interest rate model/interest_rate_YC_wh.csv"
-simulation_path = "../generated_data/risk_neutral_no_sigma/final_" + str(Nsim) + "/" + rv_type + "/"
+simulation_path = "../generated_data/risk_neutral_no_sigma/final_" + str(Nsim) +  "_" + str(look_back_days) + "/" + rv_type + "/"
 
 
 time_format = "%Y-%m-%d"
