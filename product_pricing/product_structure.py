@@ -2,13 +2,15 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 from tqdm import tqdm
+import os
+import time
 
 rv_type = "ss"
-Nsim = 5000 #if av, change to 2 * Nsim
+Nsim = 1000 
 
 
 inerest_rate_path = "../interest rate model/interest_rate_YC_wh.csv"
-simulation_path = "../generated_data/final_" + str(Nsim) + "/" + rv_type + "/"
+simulation_path = "../generated_data/risk_neutral_no_sigma/final_" + str(Nsim) + "/" + rv_type + "/"
 
 
 time_format = "%Y-%m-%d"
@@ -69,7 +71,6 @@ def get_business_days_from_initial_date(cur_date, initial_date = issue_date):
 def get_business_days_to_final_redemption(cur_date, final_date = final_redemption_date):
     return np.busday_count(cur_date, final_date)
 
-## dummy intesest rate func 
 # (should return the average interest rate from current date to final redemption date)
 def get_interest_rate(cur_date, to_date = final_redemption_date):
     r = float(interest_rate_df.loc[interest_rate_date, "rate"]) / 100
@@ -160,8 +161,11 @@ if __name__ == "__main__":
     if rv_type == "av":
         Nsim *= 2
 
-    for cur_date in tqdm(pd.bdate_range("2022-07-31", "2022-09-01",)): # "2022-05-31", "2022-08-15", "2022-10-31"
+    for cur_date in tqdm(pd.bdate_range("2022-06-01", "2022-10-31")): # "2022-05-31", "2022-08-15", "2022-10-31"
         cur_date = cur_date + pd.Timedelta(days = 1)
+        
+        while not os.path.exists(simulation_path + cur_date.strftime(time_format) + ".csv"):
+            time.sleep(1)
         sim_df = pd.read_csv(simulation_path + cur_date.strftime(time_format) + ".csv")
 
         save_date = cur_date.strftime(time_format)
